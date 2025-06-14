@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Faith Elevate App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Faith Elevate</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="#">Features</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="dashboard-panel">
+     <a href="Home.html" class="dashboard-icon" tabindex="0" style="text-decoration:none;">
+      <i class="fa-solid fa-calendar-check"></i>
+      <span class="dashboard-label">Daily Challenges</span>
+    </a>
+    <a href="library.html" class="dashboard-icon" tabindex="0" style="text-decoration:none;">
+      <i class="fa-solid fa-book-open"></i>
+      <span class="dashboard-label">Challenge Library</span>
+    </a>
+    <a href="progress.html" class="dashboard-icon" tabindex="0" style="text-decoration:none;">
+      <i class="fa-solid fa-chart-line"></i>
+      <span class="dashboard-label">Progress Tracker & Streaks</span>
+    </a>
+    <a href="reflections.html" class="dashboard-icon" tabindex="0" style="text-decoration:none;">
+      <i class="fa-solid fa-pen-fancy"></i>
+      <span class="dashboard-label">Reflections</span>
+    </a>
+    <a href="VOD.html" class="dashboard-icon" tabindex="0" style="text-decoration:none;">
+      <i class="fa-solid fa-bible"></i>
+      <span class="dashboard-label">Verse of the Day & Meditation</span>
+    </a>
+   
+    <a href="chalShare.html" class="dashboard-icon" tabindex="0" style="text-decoration:none;">
+      <i class="fa-solid fa-share-nodes"></i>
+      <span class="dashboard-label">Challenge Sharing</span>
+    </a>
+    <a href="custom.html" class="dashboard-icon" tabindex="0" style="text-decoration:none;">
+      <i class="fa-solid fa-wand-magic-sparkles"></i>
+      <span class="dashboard-label">Custom Challenge Creator</span>
+    </a>
+    <a href="archive.html" class="dashboard-icon" tabindex="0" style="text-decoration:none;">
+      <i class="fa-solid fa-trophy"></i>
+      <span class="dashboard-label">Achievements & Rewards</span>
+    </a>
+    
+  </div>
+  
+  <main class="share-container"></main>
+    <h2>Share Your Faith Challenge</h2>
+    <div class="share-section">
+      <p>Share this challenge with your friends and family!</p>
+      <div class="share-buttons">
+        <button onclick="share('whatsapp')">
+          <i class="fab fa-whatsapp"></i> Share on WhatsApp
+        </button>
+        <button onclick="share('facebook')">
+          <i class="fab fa-facebook"></i> Share on Facebook
+        </button>
+        <button onclick="share('twitter')">
+          <i class="fab fa-twitter"></i> Share on Twitter
+        </button>
+        <button onclick="share('email')">
+          <i class="fas fa-envelope"></i> Share via Email
+        </button>
+      </div>
+    </div>
+
+    <script>
+      function share(platform) {
+        const url = encodeURIComponent(window.location.href);
+        const text = encodeURIComponent('Check out this amazing Faith Challenge!');
+        
+        switch(platform) {
+          case 'whatsapp':
+            window.open(`https://wa.me/?text=${text} ${url}`);
+            break;
+          case 'facebook':
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`);
+            break;
+          case 'twitter':
+            window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`);
+            break;
+          case 'email':
+            window.location.href = `mailto:?subject=Faith Challenge&body=${text} ${url}`;
+            break;
+        }
+      }
+    </script>
+  </main>
+
+
+
+  </main>
+
+  <footer>
+    <div class="social-icons">
+      <a href="#"><i class="fab fa-facebook-f"></i><span> Facebook</span></a>
+      <a href="#"><i class="fab fa-instagram"></i><span> Instagram</span></a>
+      <a href="#"><i class="fab fa-twitter"></i><span> Twitter</span></a>
+      <a href="#"><i class="fab fa-youtube"></i><span> YouTube</span></a>
+    </div>
+    <p>&copy; 2025 Faith Elevate. All rights reserved.</p>
+  </footer>
+</body>
+</html>
