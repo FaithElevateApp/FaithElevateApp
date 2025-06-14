@@ -32,12 +32,12 @@ main, .section, .hero, .challenge-card-container, .hero-section {
 header {
   background: linear-gradient(90deg, #151516 60%, #334155 100%);
   backdrop-filter: blur(5px);
-  padding: 10px 0 0 0; /* Remove bottom padding */
-  display: flex;
-  flex-direction: column; /* Stack logo/nav/dashboard vertically */
+  padding: 5px; /* Remove bottom padding */
+  display: fixed;
+  flex-direction: row; /* Stack logo/nav/dashboard vertically */
   align-items: center;
-  box-shadow: 0 0 24px #38bdf822;
-  border-bottom: 1px solid #334155;
+  box-shadow: 0 0 24px #136b82b8;
+  border-bottom: 1px solid #050608;
   position: sticky;
   top: 0;
   z-index: 100;
@@ -52,12 +52,18 @@ header {
 header h1 {
   font-family: 'Playfair Display', serif;
   font-size: 32px;
+  justify-content: center;
+  text-align: center;
   color: #38bdf8;
   position: relative;
   z-index: 1;
   text-shadow: 0 2px 12px #38bff8, 0 0 32px #0ea5e9;
   animation: fadeIn 1s ease-out, logo-glow 2.2s infinite alternate;
   letter-spacing: 2px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
 header h1::after {
@@ -84,11 +90,11 @@ header h1::after {
 }
 
 nav ul {
-  list-style: none;
+  
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 32px;
+  gap: 15px;
   padding: 0;
   margin: 0;
 }

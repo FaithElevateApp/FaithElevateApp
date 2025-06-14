@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Faith Elevate App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .reflection-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #1e293b;
+      color: #f8fafc;
+      margin: 30px 0 40px 0;
+    }
+    .reflection-table th, .reflection-table td {
+      padding: 10px;
+      border-bottom: 1px solid #334155;
+      text-align: left;
+    }
+    .reflection-table th {
+      background: #334155;
+    }
+    .engagement-bar-bg {
+      background: #16213a;
+      border-radius: 5px;
+      height: 16px;
+      width: 100px;
+      position: relative;
+      margin-top: 2px;
+      margin-bottom: 2px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .engagement-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #38bdf8, #0ea5e9);
+      border-radius: 5px;
+      transition: width 0.5s ease-in-out;
+    }
+    .engagement-bar-text {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      transform: translateX(-50%);
+      color: #38bdf8;
+      font-weight: bold;
+      font-size: 0.95em;
+      line-height: 16px;
+    }
+  </style>
+</head>
+<body>
+ <header>
+    <h1>Faith Elevate</h1>
+    <div class="menu-container">
+      <div class="menu-icon">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <div class="menu-dropdown">
+        <a href="#" id="profile-menu-link">Profile</a>
+        <a href="#">Settings</a>
+        <a href="#">Help</a>
+        <a id="logout-menu-item" href="#">Log Out</a>
+      </div>
+    </div>
+    
+   <script>
+  // Highlight the current page and show live indicator
+  document.addEventListener('DOMContentLoaded', function() {
+    const page = location.pathname.split('/').pop().replace('.html','').toLowerCase();
+    const map = {
+      home: 'dashboard-home',
+      library: 'dashboard-library',
+      progress: 'dashboard-progress',
+      reflections: 'dashboard-reflections',
+      vod: 'dashboard-vod',
+      reminder: 'dashboard-reminder',
+      chalshare: 'dashboard-share',
+      custom: 'dashboard-custom',
+      archive: 'dashboard-archive',
+      profile: 'dashboard-profile'
+    };
+    Object.keys(map).forEach(key => {
+      const el = document.getElementById(map[key]);
+      if (el) el.classList.remove('active');
+    });
+    if (map[page]) {
+      const el = document.getElementById(map[page]);
+      if (el) {
+        el.classList.add('active');
+        // Add live indicator
+        if (!el.querySelector('.live-indicator')) {
+          const live = document.createElement('span');
+          live.className = 'live-indicator';
+          el.appendChild(live);
+        }
+      }
+    }
+  });
+    document.addEventListener('DOMContentLoaded', function() {
+    const page = location.pathname.split('/').pop().replace('.html','').toLowerCase();
+    const map = {
+      index: 'dashboard-home',
+      home: 'dashboard-home',
+      library: 'dashboard-library',
+      progress: 'dashboard-progress',
+      reflections: 'dashboard-reflections',
+      vod: 'dashboard-vod',
+      reminder: 'dashboard-reminder',
+      chalshare: 'dashboard-share',
+      custom: 'dashboard-custom',
+      archive: 'dashboard-archive',
+      profile: 'dashboard-profile'
+    };
+    Object.keys(map).forEach(key => {
+      const el = document.getElementById(map[key]);
+      if (el) el.classList.remove('active');
+    });
+    // Support index.html as home
+    let pageKey = page === "" ? "index" : page;
+    if (map[pageKey]) {
+      const el = document.getElementById(map[pageKey]);
+      if (el) {
+        el.classList.add('active');
+        // Add live indicator
+        if (!el.querySelector('.live-indicator')) {
+          const live = document.createElement('span');
+          live.className = 'live-indicator';
+          el.appendChild(live);
+        }
+      }
+    }
+  });
+
+</script>
+    <nav>
+      <ul>
+       
+            <a href="index.html" class="dashboard-link" id="dashboard-home">Home</a>
+  <a href="library.html" class="dashboard-link" id="dashboard-library">Library</a>
+  <a href="progress.html" class="dashboard-link" id="dashboard-progress">Progress</a>
+  <a href="reflections.html" class="dashboard-link" id="dashboard-reflections">Reflections</a>
+  <a href="VOD.html" class="dashboard-link" id="dashboard-vod">Dily Verse</a>
+  <a href="chalShare.html" class="dashboard-link" id="dashboard-share">Share</a>
+  <a href="custom.html" class="dashboard-link" id="dashboard-custom">Customise</a>
+  <a href="archive.html" class="dashboard-link" id="dashboard-archive">Achievements</a> </ul>
+    </nav>
+  </header>
+ 
+
+  <main style="max-width:1000px;margin:30px auto 40px auto;">
+    <h2 style="color:#38bdf8;">Reflection Library</h2>
+   <div id="reflection-table-container"></div>
+  </main>
+
+  <footer>
+    <div class="social-icons">
+      <a href="#"><i class="fab fa-facebook-f"></i><span> Facebook</span></a>
+      <a href="#"><i class="fab fa-instagram"></i><span> Instagram</span></a>
+      <a href="#"><i class="fab fa-twitter"></i><span> Twitter</span></a>
+      <a href="#"><i class="fab fa-youtube"></i><span> YouTube</span></a>
+    </div>
+    <p>&copy; 2025 Faith Elevate. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // --- Challenge Data (names only for mapping) ---
+    const challenges = [
+      { name: "Seeking God’s Will Challenge" },
+      { name: "Daily Gratitude Challenge" },
+      { name: "Prayer Discipline Challenge" },
+      { name: "Scripture Memorization Challenge" },
+      { name: "Forgiveness Challenge" },
+      { name: "Love in Action Challenge" },
+      { name: "Humility and Servanthood Challenge" },
+      { name: "Generosity Challenge" },
+      { name: "Faith Over Fear Challenge" },
+      { name: "Bible in a Month Challenge (Short Books)" },
+      { name: "Sabbath Rest Challenge" },
+      { name: "Bold Witnessing Challenge" },
+      { name: "Fasting for Focus Challenge" },
+      { name: "Taming the Tongue Challenge" },
+      { name: "Worship First Challenge" },
+      { name: "Identity in Christ Challenge" },
+      { name: "Patience Challenge" },
+      { name: "Faith Journal Challenge" },
+      { name: "Obedience Challenge" },
+      { name: "Stillness Challenge" },
+      { name: "Inquiring of God Challenge" },
+      { name: "Unlearning & Renewal Challenge" }
+    ];
+
+    function getChallengeKey(name) {
+      return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    }
+
+    // Gather all reflections for all challenges
+    function getAllReflections() {
+      let all = [];
+      challenges.forEach(ch => {
+        const key = getChallengeKey(ch.name);
+        const reflections = JSON.parse(localStorage.getItem(`challenge-reflections-${key}`) || "[]");
+        reflections.forEach(r => {
+          all.push({
+            challenge: ch.name,
+            date: r.date,
+            time: r.time || "", // If you want to store time, update save logic in library.html
+            percent: r.percent,
+            ...r
+          });
+        });
+      });
+      // Sort by date descending, then challenge
+      all.sort((a, b) => (b.date + (b.time || "")) > (a.date + (a.time || "")) ? 1 : -1);
+      return all;
+    }
+
+    // Render the reflection table
+    function renderReflectionTable() {
+      const container = document.getElementById('reflection-table-container');
+      const reflections = getAllReflections();
+
+      if (!reflections.length) {
+        container.innerHTML = `<p style="color:#fbbf24;">No reflections yet. Start a challenge and submit your reflections!</p>`;
+        return;
+      }
+
+      let html = `<table class="reflection-table">
+        <thead>
+          <tr>
+            <th>Challenge</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Engagement (%)</th>
+            <th>Reflection (if any)</th>
+          </tr>
+        </thead>
+        <tbody>
+      `;
+
+      reflections.forEach(ref => {
+        // Engagement bar
+        const percent = Number(ref.percent) || 0;
+        html += `
+          <tr>
+            <td>${ref.challenge}</td>
+            <td>${ref.date}</td>
+            <td>${ref.time || '-'}</td>
+            <td>
+              <div class="engagement-bar-bg">
+                <div class="engagement-bar-fill" style="width:${percent}%;"></div>
+                <span class="engagement-bar-text">${percent}%</span>
+              </div>
+            </td>
+            <td>${ref.text || ref.reflection || '-'}</td>
+          </tr>
+        `;
+      });
+      html += `</tbody></table>`;
+      container.innerHTML = html;
+    }
+    document.addEventListener('DOMContentLoaded', renderReflectionTable);
+  </script>
+</body>
+</html>
