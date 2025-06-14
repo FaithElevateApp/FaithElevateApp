@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Faith Elevate App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+   <header>
+    <h1>Faith Elevate</h1>
+    <div class="menu-container">
+      <div class="menu-icon">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <div class="menu-dropdown">
+        <a href="#" id="profile-menu-link">Profile</a>
+        <a href="#">Settings</a>
+        <a href="#">Help</a>
+        <a id="logout-menu-item" href="#">Log Out</a>
+      </div>
+    </div>
+    
+  <script>
+  // Highlight the current page and show live indicator
+  document.addEventListener('DOMContentLoaded', function() {
+    const page = location.pathname.split('/').pop().replace('.html','').toLowerCase();
+    const map = {
+      home: 'dashboard-home',
+      library: 'dashboard-library',
+      progress: 'dashboard-progress',
+      reflections: 'dashboard-reflections',
+      vod: 'dashboard-vod',
+      reminder: 'dashboard-reminder',
+      chalshare: 'dashboard-share',
+      custom: 'dashboard-custom',
+      archive: 'dashboard-archive',
+      profile: 'dashboard-profile'
+    };
+    Object.keys(map).forEach(key => {
+      const el = document.getElementById(map[key]);
+      if (el) el.classList.remove('active');
+    });
+    if (map[page]) {
+      const el = document.getElementById(map[page]);
+      if (el) {
+        el.classList.add('active');
+        // Add live indicator
+        if (!el.querySelector('.live-indicator')) {
+          const live = document.createElement('span');
+          live.className = 'live-indicator';
+          el.appendChild(live);
+        }
+      }
+    }
+  });
+    document.addEventListener('DOMContentLoaded', function() {
+    const page = location.pathname.split('/').pop().replace('.html','').toLowerCase();
+    const map = {
+      index: 'dashboard-home',
+      home: 'dashboard-home',
+      library: 'dashboard-library',
+      progress: 'dashboard-progress',
+      reflections: 'dashboard-reflections',
+      vod: 'dashboard-vod',
+      reminder: 'dashboard-reminder',
+      chalshare: 'dashboard-share',
+      custom: 'dashboard-custom',
+      archive: 'dashboard-archive',
+      profile: 'dashboard-profile'
+    };
+    Object.keys(map).forEach(key => {
+      const el = document.getElementById(map[key]);
+      if (el) el.classList.remove('active');
+    });
+    // Support index.html as home
+    let pageKey = page === "" ? "index" : page;
+    if (map[pageKey]) {
+      const el = document.getElementById(map[pageKey]);
+      if (el) {
+        el.classList.add('active');
+        // Add live indicator
+        if (!el.querySelector('.live-indicator')) {
+          const live = document.createElement('span');
+          live.className = 'live-indicator';
+          el.appendChild(live);
+        }
+      }
+    }
+  });
+
+</script>
+    <nav>
+      <ul>
+       
+         <a href="index.html" class="dashboard-link" id="dashboard-home">Home</a>
+  <a href="library.html" class="dashboard-link" id="dashboard-library">Challenge Library</a>
+  <a href="progress.html" class="dashboard-link" id="dashboard-progress">Progress Tracker</a>
+  <a href="reflections.html" class="dashboard-link" id="dashboard-reflections">Reflections</a>
+  <a href="VOD.html" class="dashboard-link" id="dashboard-vod">Verse of the Day</a>
+
+  <a href="chalShare.html" class="dashboard-link" id="dashboard-share">Sharing</a>
+  <a href="custom.html" class="dashboard-link" id="dashboard-custom">Custom Challenge</a>
+  <a href="archive.html" class="dashboard-link" id="dashboard-archive">Achievements</a>
+  <a href="#" class="dashboard-link" id="dashboard-profile">Profile</a>
+      </ul>
+    </nav>
+  </header>
+  
+ <script>
+  // --- Simple Local Auth System (for demo, not production) ---
+  function getUsers() {
+    return JSON.parse(localStorage.getItem("users") || "[]");
+  }
+  function saveUsers(users) {
+    localStorage.setItem("users", JSON.stringify(users));
+  }
+  function setCurrentUser(user) {
+    localStorage.setItem("currentUser", JSON.stringify(user));
+  }
+  function getCurrentUser() {
+    return JSON.parse(localStorage.getItem("currentUser") || "null");
+  }
+  function signOut() {
+    localStorage.removeItem("currentUser");
+    location.reload();
+  }
+
+  // Show/hide modal and update UI
+  function showAuthModal(show) {
+    document.getElementById("auth-modal").style.display = show ? "flex" : "none";
+  }
+
+  // Auth logic
+  let isSignUp = false;
+  const authForm = document.getElementById("auth-form");
+  const authTitle = document.getElementById("auth-title");
+  const toggleAuth = document.getElementById("toggle-auth");
+  const authName = document.getElementById("auth-name");
+  const authNameLabel = document.getElementById("auth-name-label");
+  const authEmail = document.getElementById("auth-email");
+  const authPassword = document.getElementById("auth-password");
+  const authError = document.getElementById("auth-error");
+
+  function validateEmailOrPhone(input) {
+    // Simple email or phone validation
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phonePattern = /^\+?\d{7,15}$/;
+    return emailPattern.test(input) || phonePattern.test(input);
+  }
+
+  toggleAuth.onclick = function() {
+    isSignUp = !isSignUp;
+    authTitle.textContent = isSignUp ? "Sign Up" : "Sign In";
+    toggleAuth.textContent = isSignUp ? "Already have an account? Sign In" : "Don't have an account? Sign Up";
+    authName.style.display = isSignUp ? "block" : "none";
+    authNameLabel.style.display = isSignUp ? "block" : "none";
+    authForm.querySelector("button[type=submit]").textContent = isSignUp ? "Sign Up" : "Sign In";
+    authError.style.display = "none";
+  };
+
+  authForm.onsubmit = function(e) {
+    e.preventDefault();
+    const name = authName.value.trim();
+    const emailOrPhone = authEmail.value.trim();
+    const password = authPassword.value;
+
+    authError.style.display = "none";
+    if (!validateEmailOrPhone(emailOrPhone)) {
+      authError.textContent = "Enter a valid email or phone number.";
+      authError.style.display = "block";
+      return;
+    }
+    if (password.length < 6) {
+      authError.textContent = "Password must be at least 6 characters.";
+      authError.style.display = "block";
+      return;
+    }
+    let users = getUsers();
+
+    if (isSignUp) {
+      if (!name) {
+        authError.textContent = "Please enter your name.";
+        authError.style.display = "block";
+        return;
+      }
+      if (users.find(u => u.emailOrPhone === emailOrPhone)) {
+        authError.textContent = "Account already exists with this email or phone.";
+        authError.style.display = "block";
+        return;
+      }
+      const user = { name, emailOrPhone, password };
+      users.push(user);
+      saveUsers(users);
+      setCurrentUser(user);
+      showAuthModal(false);
+      welcomeUser(user.name);
+    } else {
+      const user = users.find(u => u.emailOrPhone === emailOrPhone && u.password === password);
+      if (!user) {
+        authError.textContent = "Invalid credentials.";
+        authError.style.display = "block";
+        return;
+      }
+      setCurrentUser(user);
+      showAuthModal(false);
+      welcomeUser(user.name);
+    }
+  };
+
+  // Show profile info and logout
+  function showProfile() {
+    const user = getCurrentUser();
+    if (!user) return;
+    document.getElementById("profile-section").style.display = "block";
+    document.getElementById("profile-info").innerHTML = `
+      <strong>Name:</strong> ${user.name || "-"}<br>
+      <strong>Email/Phone:</strong> ${user.emailOrPhone || "-"}<br>
+      <strong>Signed in with:</strong> ${user.provider || "Email/Phone"}
+    `;
+  }
+
+  // Add a profile icon to dashboard (optional)
+  if (!document.getElementById("profile-icon")) {
+    const profileIcon = document.createElement("div");
+    profileIcon.className = "dashboard-icon";
+    profileIcon.id = "profile-icon";
+    profileIcon.tabIndex = 0;
+    profileIcon.innerHTML = `<i class="fa-solid fa-user"></i><span class="dashboard-label">Profile</span>`;
+    document.querySelector(".dashboard-panel").appendChild(profileIcon);
+    profileIcon.onclick = showProfile;
+  }
+
+  // Log out button
+  document.getElementById("logout-btn").onclick = function() {
+    signOut();
+  };
+
+  // --- Update Google/Apple sign in to use real names if available ---
+  document.getElementById("google-auth").onclick = function() {
+    // Simulate Google user info (replace with real info if using OAuth)
+    const user = { name: "Friend in Christ", emailOrPhone: "john.google@gmail.com", provider: "Google" };
+    setCurrentUser(user);
+    showAuthModal(false);
+    welcomeUser(user.name);
+  };
+  document.getElementById("apple-auth").onclick = function() {
+    // Simulate Apple user info (replace with real info if using OAuth)
+    const user = { name: "Friend in Christ", emailOrPhone: "jane@icloud.com", provider: "Apple" };
+    setCurrentUser(user);
+    showAuthModal(false);
+    welcomeUser(user.name);
+  };
+
+  // Welcome user by name
+  function welcomeUser(name) {
+    setTimeout(() => {
+      alert("Welcome, " + name + "!");
+    }, 300);
+    if (document.getElementById("user-welcome")) {
+      document.getElementById("user-welcome").textContent = "Welcome, " + name + "!";
+    }
+    // Show profile icon
+    const icon = document.getElementById("header-profile-icon");
+    if (icon) icon.style.display = "inline";
+  }
+
+  // Show icon if already logged in
+  document.addEventListener("DOMContentLoaded", function() {
+    const user = getCurrentUser();
+    if (user && user.name) {
+      showAuthModal(false);
+      if (document.getElementById("user-welcome")) {
+        document.getElementById("user-welcome").textContent = "Welcome, " + user.name + "!";
+      }
+      const icon = document.getElementById("header-profile-icon");
+      if (icon) icon.style.display = "inline";
+    } else {
+      showAuthModal(true);
+    }
+  });
+
+  // Profile icon click = show profile section
+  document.addEventListener("DOMContentLoaded", function() {
+    const headerProfileIcon = document.getElementById("header-profile-icon");
+    if (headerProfileIcon) {
+      headerProfileIcon.onclick = function() {
+        showProfile();
+      };
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', function() {
+  // Attach event to all finish buttons
+  document.querySelectorAll('.finish-challenge-btn').forEach(function(btn) {
+    btn.onclick = function(e) {
+      e.stopPropagation();
+      // Get challenge key (you can set this as a data attribute)
+      const card = btn.closest('.challenge-card');
+      const key = card.getAttribute('data-key');
+      if (confirm("Are you sure you want to finish and close this challenge? This will clear your progress for this challenge.")) {
+        // Remove challenge progress from localStorage
+        localStorage.removeItem(`challenge-days-${key}`);
+        localStorage.removeItem(`challenge-start-${key}`);
+        localStorage.removeItem(`challenge-completed-${key}`);
+        localStorage.removeItem(`challenge-reflections-${key}`);
+        // Optionally, mark as finished or hide the card
+        card.style.opacity = 0.5;
+        btn.disabled = true;
+        btn.textContent = "Finished";
+        alert("Challenge closed!");
+      }
+    };
+  });
+});
+</script>
+<span id="user-welcome" style="color:#38bdf8;font-weight:bold;margin-left:18px;"></span>
+<span id="header-profile-icon" style="float:right;cursor:pointer;margin-right:18px;display:none;">
+  <i class="fa-solid fa-user-circle" style="font-size:1.5em;"></i>
+</span>
+
+<!-- Add this inside your <body> after the dashboard-panel and before your main content -->
+<div class="challenge-library-advanced" style="max-width:1100px;margin:40px auto 40px auto;">
+  <h2 style="color:#38bdf8;">My Challenge Library</h2>
+  <div id="challenge-library-list"></div>
+</div>
+
+<!-- Add Chart.js for analytics -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+/* --- ADVANCED CHALLENGE LIBRARY FEATURES --- */
+
+// Example challenge data (replace with your real challenge list)
+const challenges = [
+  {
+    key: "scripture-memorization-challenge",
+    name: "Scripture Memorization",
+    levels: [
+      { level: 1, label: "Beginner", description: "Memorize 1 short verse" },
+      { level: 2, label: "Intermediate", description: "Memorize 2 short verses" },
+      { level: 3, label: "Pro", description: "Memorize a passage" }
+    ],
+    scripture: "Psalm 119:11",
+    description: "Hide God's Word in your heart.",
+  },
+  {
+    key: "daily-gratitude-challenge",
+    name: "Daily Gratitude",
+    levels: [
+      { level: 1, label: "Starter", description: "List 1 thing daily" },
+      { level: 2, label: "Growing", description: "List 3 things daily" },
+      { level: 3, label: "Master", description: "Keep a gratitude journal" }
+    ],
+    scripture: "1 Thessalonians 5:18",
+    description: "Focus on God's blessings every day.",
+  }
+  // Add more challenges as needed
+];
+
+// Helper: Get challenge progress from localStorage
+function getChallengeProgress(key) {
+  const totalDays = Number(localStorage.getItem(`challenge-days-${key}`)) || 0;
+  const completed = Number(localStorage.getItem(`challenge-completed-${key}`)) || 0;
+  const reflections = JSON.parse(localStorage.getItem(`challenge-reflections-${key}`) || "[]");
+  const finished = localStorage.getItem(`challenge-finished-${key}`) === "true";
+  // Calculate average engagement
+  let avg = 0;
+  if (reflections.length) {
+    avg = Math.round(reflections.reduce((a, r) => a + (Number(r.percent) || 0), 0) / reflections.length);
+  }
+  // Calculate streak (consecutive days)
+  let streak = 0;
+  if (reflections.length) {
+    const dates = reflections.map(r => r.date).sort();
+    let last = null;
+    streak = 1;
+    for (let i = 1; i < dates.length; i++) {
+      const prev = new Date(dates[i - 1]);
+      const curr = new Date(dates[i]);
+      if ((curr - prev) / (1000 * 60 * 60 * 24) === 1) {
+        streak++;
+      } else {
+        streak = 1;
+      }
+    }
+  }
+  return { totalDays, completed, avg, streak, reflections, finished };
+}
+
+// Helper: Save finished flag
+function finishChallenge(key) {
+  localStorage.setItem(`challenge-finished-${key}`, "true");
+}
+
+// Helper: Archive challenge (remove all progress)
+function archiveChallenge(key) {
+  localStorage.removeItem(`challenge-days-${key}`);
+  localStorage.removeItem(`challenge-start-${key}`);
+  localStorage.removeItem(`challenge-completed-${key}`);
+  localStorage.removeItem(`challenge-reflections-${key}`);
+  localStorage.removeItem(`challenge-finished-${key}`);
+}
+
+// Helper: Share progress (copy to clipboard)
+function shareChallengeProgress(challenge, progress) {
+  const text = `I just completed the "${challenge.name}" challenge on Faith Elevate!\n` +
+    `Level: ${progress.level || 1}\n` +
+    `Average Engagement: ${progress.avg}%\n` +
+    `Best Streak: ${progress.streak} days\n` +
+    `Join me!`;
+  navigator.clipboard.writeText(text).then(() => {
+    alert("Progress copied to clipboard! Share it with your friends.");
+  });
+}
+
+// Render the challenge library
+function renderChallengeLibrary() {
+  const container = document.getElementById("challenge-library-list");
+  container.innerHTML = "";
+  challenges.forEach(ch => {
+    const progress = getChallengeProgress(ch.key);
+    // Level selection (persisted per challenge)
+    let userLevel = Number(localStorage.getItem(`challenge-level-${ch.key}`)) || 1;
+    // Card
+    const card = document.createElement("div");
+    card.className = "challenge-card-advanced";
+    card.style = `background:#1e293b;border-radius:12px;margin-bottom:28px;padding:22px 28px;box-shadow:0 2px 12px #0002;position:relative;${progress.finished ? 'opacity:0.6;' : ''}`;
+    card.innerHTML = `
+      <h3 style="color:#38bdf8;">${ch.name}</h3>
+      <p>${ch.description}</p>
+      <p class="scripture"><strong>${ch.scripture}</strong></p>
+      <div style="margin-bottom:10px;">
+        <label>Level:
+          <select class="level-select" data-key="${ch.key}" style="margin-left:8px;">
+            ${ch.levels.map(lvl => `<option value="${lvl.level}" ${userLevel===lvl.level?'selected':''}>${lvl.label}</option>`).join('')}
+          </select>
+        </label>
+        <span class="badge" style="margin-left:10px;">${progress.finished ? "🏁 Finished" : "🏅"}</span>
+      </div>
+      <div class="streak-info" style="margin-bottom:10px;">
+        <span>🔥 ${progress.streak || 0}-day streak</span>
+        <button class="set-reminder-btn" data-key="${ch.key}" style="margin-left:12px;background:#38bdf8;color:#0f172a;border:none;padding:4px 10px;border-radius:5px;cursor:pointer;">Set Reminder</button>
+      </div>
+      <div class="progress-bar-bg" style="width:220px;height:22px;position:relative;background:#16213a;border-radius:5px;overflow:hidden;margin-bottom:10px;">
+        <div class="progress-bar-fill" style="width:${progress.avg}%;height:100%;background:linear-gradient(90deg,#38bdf8,#0ea5e9);border-radius:5px;transition:width 0.5s;"></div>
+        <span class="progress-bar-text" style="position:absolute;right:10px;top:2px;color:#38bdf8;font-weight:bold;">${progress.avg}%</span>
+      </div>
+      <button class="share-btn" data-key="${ch.key}" style="background:#0ea5e9;color:#fff;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;margin-right:8px;">Share Progress</button>
+      <button class="archive-btn" data-key="${ch.key}" style="background:#fbbf24;color:#0f172a;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;margin-right:8px;">Archive</button>
+      <button class="finish-challenge-btn" data-key="${ch.key}" style="background:#22c55e;color:#fff;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;">Finish</button>
+      <div class="challenge-analytics" style="margin-top:18px;">
+        <h4 style="color:#38bdf8;">Analytics</h4>
+        <canvas id="engagement-graph-${ch.key}" width="320" height="120"></canvas>
+        <ul>
+          <li>Average Engagement: ${progress.avg}%</li>
+          <li>Best Streak: ${progress.streak} days</li>
+          <li>Reflections: ${progress.reflections.length}</li>
+        </ul>
+      </div>
+      <div class="challenge-calendar" style="margin-top:18px;">
+        <h4 style="color:#38bdf8;">Reflection Calendar</h4>
+        <div id="calendar-${ch.key}" style="display:flex;gap:4px;flex-wrap:wrap;"></div>
+      </div>
+    `;
+    container.appendChild(card);
+
+    // Draw analytics graph
+    setTimeout(() => {
+      const ctx = document.getElementById(`engagement-graph-${ch.key}`);
+      if (ctx && progress.reflections.length) {
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: progress.reflections.map(r => r.date),
+            datasets: [{
+              label: 'Engagement (%)',
+              data: progress.reflections.map(r => r.percent),
+              borderColor: '#38bdf8',
+              backgroundColor: '#0ea5e9',
+              tension: 0.2,
+              pointRadius: 4,
+              pointBackgroundColor: '#fbbf24'
+            }]
+          },
+          options: {
+            responsive: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              y: { min: 0, max: 100, ticks: { color: '#f8fafc' }, grid: { color: '#334155' } },
+              x: { ticks: { color: '#f8fafc' }, grid: { color: '#334155' } }
+            }
+          }
+        });
+      }
+    }, 100);
+
+    // Draw simple calendar (just highlight reflection days)
+    setTimeout(() => {
+      const calDiv = document.getElementById(`calendar-${ch.key}`);
+      if (calDiv) {
+        calDiv.innerHTML = "";
+        const days = {};
+        progress.reflections.forEach(r => days[r.date] = true);
+        // Show last 30 days
+        for (let i = 29; i >= 0; i--) {
+          const d = new Date();
+          d.setDate(d.getDate() - i);
+          const dateStr = d.toISOString().slice(0, 10);
+          const hasReflection = days[dateStr];
+          const box = document.createElement("div");
+          box.title = dateStr;
+          box.style = `width:18px;height:18px;border-radius:4px;margin:1px;display:inline-block;${hasReflection ? 'background:#38bdf8;' : 'background:#334155;'};border:1px solid #16213a;`;
+          calDiv.appendChild(box);
+        }
+      }
+    }, 100);
+  });
+
+  // Level select handler
+  container.querySelectorAll('.level-select').forEach(sel => {
+    sel.onchange = function() {
+      const key = sel.getAttribute('data-key');
+      localStorage.setItem(`challenge-level-${key}`, sel.value);
+      alert("Level updated!");
+    };
+  });
+
+  // Reminder button handler (demo: just alert)
+  container.querySelectorAll('.set-reminder-btn').forEach(btn => {
+    btn.onclick = function() {
+      alert("Reminder set! (In a real app, this would use notifications or emails.)");
+    };
+  });
+
+  // Share button handler
+  container.querySelectorAll('.share-btn').forEach(btn => {
+    btn.onclick = function() {
+      const key = btn.getAttribute('data-key');
+      const ch = challenges.find(c => c.key === key);
+      const progress = getChallengeProgress(key);
+      shareChallengeProgress(ch, progress);
+    };
+  });
+
+  // Archive button handler
+  container.querySelectorAll('.archive-btn').forEach(btn => {
+    btn.onclick = function() {
+      const key = btn.getAttribute('data-key');
+      if (confirm("Are you sure you want to archive this challenge? All progress will be lost.")) {
+        archiveChallenge(key);
+        renderChallengeLibrary();
+      }
+    };
+  });
+
+  // Finish button handler
+  container.querySelectorAll('.finish-challenge-btn').forEach(btn => {
+    btn.onclick = function() {
+      const key = btn.getAttribute('data-key');
+      if (confirm("Mark this challenge as finished?")) {
+        finishChallenge(key);
+        renderChallengeLibrary();
+      }
+    };
+  });
+}
+
+// Render on page load
+document.addEventListener('DOMContentLoaded', renderChallengeLibrary);
+</script>
+
+
+  </main>
+
+  <footer>
+    <div class="social-icons">
+      <a href="#"><i class="fab fa-facebook-f"></i><span> Facebook</span></a>
+      <a href="#"><i class="fab fa-instagram"></i><span> Instagram</span></a>
+      <a href="#"><i class="fab fa-twitter"></i><span> Twitter</span></a>
+      <a href="#"><i class="fab fa-youtube"></i><span> YouTube</span></a>
+    </div>
+    <p>&copy; 2025 Faith Elevate. All rights reserved.</p>
+  </footer>
+</body>
+</html>
