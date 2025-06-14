@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Faith Elevate App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="auth-modal" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(16,23,42,0.95);z-index:9999;display:flex;align-items:center;justify-content:center;">
+  <div style="background:#1e293b;padding:32px 28px;border-radius:12px;max-width:350px;width:100%;box-shadow:0 8px 32px #0008;">
+    <h2 id="auth-title" style="color:#38bdf8;text-align:center;">Sign In</h2>
+    <form id="auth-form">
+      <div style="margin-bottom:12px;">
+        <label for="auth-name" id="auth-name-label" style="display:none;">Name:</label>
+        <input type="text" id="auth-name" style="width:100%;padding:8px;margin-top:4px;border-radius:5px;border:1px solid #334155;background:#16213a;color:#f8fafc;display:none;" placeholder="Your Name">
+      </div>
+      <div style="margin-bottom:12px;">
+        <label for="auth-email">Email or Phone:</label>
+        <input type="text" id="auth-email" style="width:100%;padding:8px;margin-top:4px;border-radius:5px;border:1px solid #334155;background:#16213a;color:#f8fafc;" placeholder="Email or Phone">
+      </div>
+      <div style="margin-bottom:12px;">
+        <label for="auth-password">Password:</label>
+        <input type="password" id="auth-password" style="width:100%;padding:8px;margin-top:4px;border-radius:5px;border:1px solid #334155;background:#16213a;color:#f8fafc;" placeholder="Password">
+      </div>
+      <div id="auth-error" style="color:#ef4444;text-align:center;margin-bottom:8px;display:none;"></div>
+      <button type="submit" style="width:100%;background:#38bdf8;color:#0f172a;font-weight:bold;border:none;padding:10px 0;border-radius:6px;cursor:pointer;">Sign In</button>
+    </form>
+    <div style="text-align:center;margin:10px 0;">
+      <span id="toggle-auth" style="color:#38bdf8;cursor:pointer;">Don't have an account? Sign Up</span>
+    </div>
+    <div style="text-align:center;margin:10px 0;">
+      <button id="google-auth" style="background:#fff;color:#0f172a;font-weight:bold;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;margin-bottom:6px;"><i class="fab fa-google"></i> Sign in with Google</button>
+      <button id="apple-auth" style="background:#000;color:#fff;font-weight:bold;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;"><i class="fab fa-apple"></i> Sign in with Apple</button>
+    </div>
+  </div>
+</div>
+
+  <header>
+  <h1>Faith Elevate</h1>
+  <div class="menu-container">
+    <div class="menu-icon">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+    <div class="menu-dropdown">
+      <a href="#" id="profile-menu-link">Profile</a>
+      <a href="#">Settings</a>
+      <a href="#">Help</a>
+      <a id="logout-menu-item" href="#">Log Out</a>
+    </div>
+  </div>
+  <style>
+    .menu-container {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      cursor: pointer;
+    }
+    .menu-icon {
+      width: 30px;
+      height: 25px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+    .menu-icon div {
+      width: 100%;
+      height: 3px;
+      background-color: #38bdf8;
+      transition: 0.3s;
+    }
+    .menu-dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background-color: #1e293b;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 1000;
+    }
+    .menu-dropdown a {
+      color: #f8fafc;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+      transition: background-color 0.3s;
+    }
+    .menu-dropdown a:hover {
+      background-color: #334155;
+    }
+    .menu-container:hover .menu-dropdown {
+      display: flex;
+    }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const logoutMenuItem = document.getElementById('logout-menu-item');
+      if (logoutMenuItem) {
+        logoutMenuItem.addEventListener('click', function(event) {
+          event.preventDefault();
+          if (typeof signOut === "function") signOut();
+        });
+      }
+      const profileMenuLink = document.getElementById('profile-menu-link');
+      if (profileMenuLink && typeof showProfile === "function") {
+        profileMenuLink.addEventListener('click', function(event) {
+          event.preventDefault();
+          showProfile();
+        });
+      }
+    });
+  </script>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="#">Features</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+  <div class="dashboard-panel">
+    <a href="Home.html" class="dashboard-icon" tabindex="0" style="text-decoration:none;">
+      <i class="fa-solid fa-calendar-check"></i>
+      <span class="dashboard-label">Daily Challenges</span>
+    </a>
+    <a href="library.html" class="dashboard-icon" tabindex="0" style="text-decoration:none;">
+      <i class="fa-solid fa-book-open"></i>
+      <span class="dashboard-label">Challenge Library</span>
+    </a>
+    <a href="progress.html" class="dashboard-icon" tabindex="0" style="text-decoration:none;">
+      <i class="fa-solid fa-chart-line"></i>
+      <span class="dashboard-label">Progress Tracker & Streaks</span>
+    </a>
+    <a href="reflections.html" class="dashboard-icon" tabindex="0" style="text-decoration:none;">
+      <i class="fa-solid fa-pen-fancy"></i>
+      <span class="dashboard-label">Reflections</span>
+    </a>
+    <a href="VOD.html" class="dashboard-icon" tabindex="0" style="text-decoration:none;">
+      <i class="fa-solid fa-bible"></i>
+      <span class="dashboard-label">Verse of the Day & Meditation</span>
+    </a>
+    
+    <a href="chalShare.html" class="dashboard-icon" tabindex="0" style="text-decoration:none;">
+      <i class="fa-solid fa-share-nodes"></i>
+      <span class="dashboard-label">Challenge Sharing</span>
+    </a>
+    <a href="custom.html" class="dashboard-icon" tabindex="0" style="text-decoration:none;">
+      <i class="fa-solid fa-wand-magic-sparkles"></i>
+      <span class="dashboard-label">Custom Challenge Creator</span>
+    </a>
+    <a href="archive.html" class="dashboard-icon" tabindex="0" style="text-decoration:none;">
+      <i class="fa-solid fa-trophy"></i>
+      <span class="dashboard-label">Achievements & Rewards</span>
+    </a>
+    
+  </div>
+
+  <!-- Add this after your dashboard-panel, before main content -->
+<div id="profile-section" style="max-width:350px;margin:24px auto 0 auto;display:none;background:#1e293b;padding:18px 22px;border-radius:10px;box-shadow:0 2px 12px #0002;">
+  <h3 style="color:#38bdf8;">My Profile</h3>
+  <div id="profile-info" style="margin-bottom:16px;color:#f8fafc;"></div>
+  <button id="logout-btn" style="background:#ef4444;color:#fff;font-weight:bold;border:none;padding:8px 18px;border-radius:6px;cursor:pointer;">Log Out</button>
+</div>
+
+  <div class="challenge-card-container">
+    <div class="challenge-card">
+      <h2>Seeking God's Will</h2>
+      <p>Discover clarity and peace as you invite God into every decision.</p>
+      <p class="scripture"><strong>Proverbs 3:5-6</strong> Trust in the Lord with all your heart and lean not on your own understanding...</p>
+      <a href="#">Start Challenge</a>
+    </div>
+    <div class="challenge-card">
+      <h2>Daily Gratitude</h2>
+      <p>Transform your perspective by focusing on God's blessings in every circumstance.</p>
+      <p class="scripture"><strong>1 Thessalonians 5:18</strong> Give thanks in all circumstances; for this is God's will for you in Christ Jesus.</p>
+      <a href="#">Start Challenge</a>
+    </div>
+    <div class="challenge-card">
+      <h2>Prayer Discipline</h2>
+      <p>Deepen your connection with God through consistent and focused prayer.</p>
+      <p class="scripture"><strong>Philippians 4:6</strong> Do not be anxious about anything, but in every situation, by prayer and petition...</p>
+      <a href="#">Start Challenge</a>
+    </div>
+    <!-- Example for a challenge card -->
+<div class="challenge-card" data-key="scripture-memorization-challenge">
+  <h2>Scripture Memorization</h2>
+  <div class="level-select">
+    <label>Level:
+      <select>
+        <option>Beginner</option>
+        <option>Intermediate</option>
+        <option>Pro</option>
+      </select>
+    </label>
+    <span class="badge">🏅</span>
+  </div>
+  <div class="streak-info">
+    <span>🔥 5-day streak</span>
+    <button class="set-reminder-btn">Set Reminder</button>
+  </div>
+  <div class="progress-bar-bg">
+    <div class="progress-bar-fill" style="width:60%"></div>
+    <span class="progress-bar-text">60%</span>
+  </div>
+  <button class="share-btn">Share Progress</button>
+  <button class="archive-btn">Archive</button>
+  <button class="finish-challenge-btn">Finish</button>
+</div>
+  </div>
+
+  <div class="challenge-analytics">
+  <h3>Analytics</h3>
+  <canvas id="engagement-graph"></canvas>
+  <ul>
+    <li>Average Engagement: 78%</li>
+    <li>Best Streak: 7 days</li>
+    <li>Most Active Day: Wednesday</li>
+  </ul>
+</div>
+
+  <div class="challenge-calendar">
+  <h3>Reflection Calendar</h3>
+  <!-- Use a JS calendar library or build your own -->
+  <div id="calendar"></div>
+</div>
+
+  <footer>
+    <div class="social-icons">
+      <a href="#"><i class="fab fa-facebook-f"></i><span> Facebook</span></a>
+      <a href="#"><i class="fab fa-instagram"></i><span> Instagram</span></a>
+      <a href="#"><i class="fab fa-twitter"></i><span> Twitter</span></a>
+      <a href="#"><i class="fab fa-youtube"></i><span> YouTube</span></a>
+    </div>
+    <p>&copy; 2025 Faith Elevate. All rights reserved.</p>
+  </footer>
+
+  <script>
+  // --- Simple Local Auth System (for demo, not production) ---
+  function getUsers() {
+    return JSON.parse(localStorage.getItem("users") || "[]");
+  }
+  function saveUsers(users) {
+    localStorage.setItem("users", JSON.stringify(users));
+  }
+  function setCurrentUser(user) {
+    localStorage.setItem("currentUser", JSON.stringify(user));
+  }
+  function getCurrentUser() {
+    return JSON.parse(localStorage.getItem("currentUser") || "null");
+  }
+  function signOut() {
+    localStorage.removeItem("currentUser");
+    location.reload();
+  }
+
+  // Show/hide modal and update UI
+  function showAuthModal(show) {
+    document.getElementById("auth-modal").style.display = show ? "flex" : "none";
+  }
+
+  // Auth logic
+  let isSignUp = false;
+  const authForm = document.getElementById("auth-form");
+  const authTitle = document.getElementById("auth-title");
+  const toggleAuth = document.getElementById("toggle-auth");
+  const authName = document.getElementById("auth-name");
+  const authNameLabel = document.getElementById("auth-name-label");
+  const authEmail = document.getElementById("auth-email");
+  const authPassword = document.getElementById("auth-password");
+  const authError = document.getElementById("auth-error");
+
+  function validateEmailOrPhone(input) {
+    // Simple email or phone validation
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phonePattern = /^\+?\d{7,15}$/;
+    return emailPattern.test(input) || phonePattern.test(input);
+  }
+
+  toggleAuth.onclick = function() {
+    isSignUp = !isSignUp;
+    authTitle.textContent = isSignUp ? "Sign Up" : "Sign In";
+    toggleAuth.textContent = isSignUp ? "Already have an account? Sign In" : "Don't have an account? Sign Up";
+    authName.style.display = isSignUp ? "block" : "none";
+    authNameLabel.style.display = isSignUp ? "block" : "none";
+    authForm.querySelector("button[type=submit]").textContent = isSignUp ? "Sign Up" : "Sign In";
+    authError.style.display = "none";
+  };
+
+  authForm.onsubmit = function(e) {
+    e.preventDefault();
+    const name = authName.value.trim();
+    const emailOrPhone = authEmail.value.trim();
+    const password = authPassword.value;
+
+    authError.style.display = "none";
+    if (!validateEmailOrPhone(emailOrPhone)) {
+      authError.textContent = "Enter a valid email or phone number.";
+      authError.style.display = "block";
+      return;
+    }
+    if (password.length < 6) {
+      authError.textContent = "Password must be at least 6 characters.";
+      authError.style.display = "block";
+      return;
+    }
+    let users = getUsers();
+
+    if (isSignUp) {
+      if (!name) {
+        authError.textContent = "Please enter your name.";
+        authError.style.display = "block";
+        return;
+      }
+      if (users.find(u => u.emailOrPhone === emailOrPhone)) {
+        authError.textContent = "Account already exists with this email or phone.";
+        authError.style.display = "block";
+        return;
+      }
+      const user = { name, emailOrPhone, password };
+      users.push(user);
+      saveUsers(users);
+      setCurrentUser(user);
+      showAuthModal(false);
+      welcomeUser(user.name);
+    } else {
+      const user = users.find(u => u.emailOrPhone === emailOrPhone && u.password === password);
+      if (!user) {
+        authError.textContent = "Invalid credentials.";
+        authError.style.display = "block";
+        return;
+      }
+      setCurrentUser(user);
+      showAuthModal(false);
+      welcomeUser(user.name);
+    }
+  };
+
+  // Show profile info and logout
+  function showProfile() {
+    const user = getCurrentUser();
+    if (!user) return;
+    document.getElementById("profile-section").style.display = "block";
+    document.getElementById("profile-info").innerHTML = `
+      <strong>Name:</strong> ${user.name || "-"}<br>
+      <strong>Email/Phone:</strong> ${user.emailOrPhone || "-"}<br>
+      <strong>Signed in with:</strong> ${user.provider || "Email/Phone"}
+    `;
+  }
+
+  // Add a profile icon to dashboard (optional)
+  if (!document.getElementById("profile-icon")) {
+    const profileIcon = document.createElement("div");
+    profileIcon.className = "dashboard-icon";
+    profileIcon.id = "profile-icon";
+    profileIcon.tabIndex = 0;
+    profileIcon.innerHTML = `<i class="fa-solid fa-user"></i><span class="dashboard-label">Profile</span>`;
+    document.querySelector(".dashboard-panel").appendChild(profileIcon);
+    profileIcon.onclick = showProfile;
+  }
+
+  // Log out button
+  document.getElementById("logout-btn").onclick = function() {
+    signOut();
+  };
+
+
+
+  // Welcome user by name
+  function welcomeUser(name) {
+    setTimeout(() => {
+      alert("Welcome, " + name + "!");
+    }, 300);
+    if (document.getElementById("user-welcome")) {
+      document.getElementById("user-welcome").textContent = "Welcome, " + name + "!";
+    }
+    // Show profile icon
+    const icon = document.getElementById("header-profile-icon");
+    if (icon) icon.style.display = "inline";
+  }
+
+  // Show icon if already logged in
+  document.addEventListener("DOMContentLoaded", function() {
+    const user = getCurrentUser();
+    if (user && user.name) {
+      showAuthModal(false);
+      if (document.getElementById("user-welcome")) {
+        document.getElementById("user-welcome").textContent = "Welcome, " + user.name + "!";
+      }
+      const icon = document.getElementById("header-profile-icon");
+      if (icon) icon.style.display = "inline";
+    } else {
+      showAuthModal(true);
+    }
+  });
+
+  // Profile icon click = show profile section
+  document.addEventListener("DOMContentLoaded", function() {
+    const headerProfileIcon = document.getElementById("header-profile-icon");
+    if (headerProfileIcon) {
+      headerProfileIcon.onclick = function() {
+        showProfile();
+      };
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', function() {
+  // Attach event to all finish buttons
+  document.querySelectorAll('.finish-challenge-btn').forEach(function(btn) {
+    btn.onclick = function(e) {
+      e.stopPropagation();
+      // Get challenge key (you can set this as a data attribute)
+      const card = btn.closest('.challenge-card');
+      const key = card.getAttribute('data-key');
+      if (confirm("Are you sure you want to finish and close this challenge? This will clear your progress for this challenge.")) {
+        // Remove challenge progress from localStorage
+        localStorage.removeItem(`challenge-days-${key}`);
+        localStorage.removeItem(`challenge-start-${key}`);
+        localStorage.removeItem(`challenge-completed-${key}`);
+        localStorage.removeItem(`challenge-reflections-${key}`);
+        // Optionally, mark as finished or hide the card
+        card.style.opacity = 0.5;
+        btn.disabled = true;
+        btn.textContent = "Finished";
+        alert("Challenge closed!");
+      }
+    };
+  });
+});
+</script>
+<span id="user-welcome" style="color:#38bdf8;font-weight:bold;margin-left:18px;"></span>
+<span id="header-profile-icon" style="float:right;cursor:pointer;margin-right:18px;display:none;">
+  <i class="fa-solid fa-user-circle" style="font-size:1.5em;"></i>
+</span>
+
+<!-- Add this inside your <body> after the dashboard-panel and before your main content -->
+<div class="challenge-library-advanced" style="max-width:1100px;margin:40px auto 40px auto;">
+  <h2 style="color:#38bdf8;">My Challenge Library</h2>
+  <div id="challenge-library-list"></div>
+</div>
+
+<!-- Add Chart.js for analytics -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+/* --- ADVANCED CHALLENGE LIBRARY FEATURES --- */
+
+// Example challenge data (replace with your real challenge list)
+const challenges = [
+  {
+    key: "scripture-memorization-challenge",
+    name: "Scripture Memorization",
+    levels: [
+      { level: 1, label: "Beginner", description: "Memorize 1 short verse" },
+      { level: 2, label: "Intermediate", description: "Memorize 2 short verses" },
+      { level: 3, label: "Pro", description: "Memorize a passage" }
+    ],
+    scripture: "Psalm 119:11",
+    description: "Hide God's Word in your heart.",
+  },
+  {
+    key: "daily-gratitude-challenge",
+    name: "Daily Gratitude",
+    levels: [
+      { level: 1, label: "Starter", description: "List 1 thing daily" },
+      { level: 2, label: "Growing", description: "List 3 things daily" },
+      { level: 3, label: "Master", description: "Keep a gratitude journal" }
+    ],
+    scripture: "1 Thessalonians 5:18",
+    description: "Focus on God's blessings every day.",
+  }
+  // Add more challenges as needed
+];
+
+// Helper: Get challenge progress from localStorage
+function getChallengeProgress(key) {
+  const totalDays = Number(localStorage.getItem(`challenge-days-${key}`)) || 0;
+  const completed = Number(localStorage.getItem(`challenge-completed-${key}`)) || 0;
+  const reflections = JSON.parse(localStorage.getItem(`challenge-reflections-${key}`) || "[]");
+  const finished = localStorage.getItem(`challenge-finished-${key}`) === "true";
+  // Calculate average engagement
+  let avg = 0;
+  if (reflections.length) {
+    avg = Math.round(reflections.reduce((a, r) => a + (Number(r.percent) || 0), 0) / reflections.length);
+  }
+  // Calculate streak (consecutive days)
+  let streak = 0;
+  if (reflections.length) {
+    const dates = reflections.map(r => r.date).sort();
+    let last = null;
+    streak = 1;
+    for (let i = 1; i < dates.length; i++) {
+      const prev = new Date(dates[i - 1]);
+      const curr = new Date(dates[i]);
+      if ((curr - prev) / (1000 * 60 * 60 * 24) === 1) {
+        streak++;
+      } else {
+        streak = 1;
+      }
+    }
+  }
+  return { totalDays, completed, avg, streak, reflections, finished };
+}
+
+// Helper: Save finished flag
+function finishChallenge(key) {
+  localStorage.setItem(`challenge-finished-${key}`, "true");
+}
+
+// Helper: Archive challenge (remove all progress)
+function archiveChallenge(key) {
+  localStorage.removeItem(`challenge-days-${key}`);
+  localStorage.removeItem(`challenge-start-${key}`);
+  localStorage.removeItem(`challenge-completed-${key}`);
+  localStorage.removeItem(`challenge-reflections-${key}`);
+  localStorage.removeItem(`challenge-finished-${key}`);
+}
+
+// Helper: Share progress (copy to clipboard)
+function shareChallengeProgress(challenge, progress) {
+  const text = `I just completed the "${challenge.name}" challenge on Faith Elevate!\n` +
+    `Level: ${progress.level || 1}\n` +
+    `Average Engagement: ${progress.avg}%\n` +
+    `Best Streak: ${progress.streak} days\n` +
+    `Join me!`;
+  navigator.clipboard.writeText(text).then(() => {
+    alert("Progress copied to clipboard! Share it with your friends.");
+  });
+}
+
+// Render the challenge library
+function renderChallengeLibrary() {
+  const container = document.getElementById("challenge-library-list");
+  container.innerHTML = "";
+  challenges.forEach(ch => {
+    const progress = getChallengeProgress(ch.key);
+    // Level selection (persisted per challenge)
+    let userLevel = Number(localStorage.getItem(`challenge-level-${ch.key}`)) || 1;
+    // Card
+    const card = document.createElement("div");
+    card.className = "challenge-card-advanced";
+    card.style = `background:#1e293b;border-radius:12px;margin-bottom:28px;padding:22px 28px;box-shadow:0 2px 12px #0002;position:relative;${progress.finished ? 'opacity:0.6;' : ''}`;
+    card.innerHTML = `
+      <h3 style="color:#38bdf8;">${ch.name}</h3>
+      <p>${ch.description}</p>
+      <p class="scripture"><strong>${ch.scripture}</strong></p>
+      <div style="margin-bottom:10px;">
+        <label>Level:
+          <select class="level-select" data-key="${ch.key}" style="margin-left:8px;">
+            ${ch.levels.map(lvl => `<option value="${lvl.level}" ${userLevel===lvl.level?'selected':''}>${lvl.label}</option>`).join('')}
+          </select>
+        </label>
+        <span class="badge" style="margin-left:10px;">${progress.finished ? "🏁 Finished" : "🏅"}</span>
+      </div>
+      <div class="streak-info" style="margin-bottom:10px;">
+        <span>🔥 ${progress.streak || 0}-day streak</span>
+        <button class="set-reminder-btn" data-key="${ch.key}" style="margin-left:12px;background:#38bdf8;color:#0f172a;border:none;padding:4px 10px;border-radius:5px;cursor:pointer;">Set Reminder</button>
+      </div>
+      <div class="progress-bar-bg" style="width:220px;height:22px;position:relative;background:#16213a;border-radius:5px;overflow:hidden;margin-bottom:10px;">
+        <div class="progress-bar-fill" style="width:${progress.avg}%;height:100%;background:linear-gradient(90deg,#38bdf8,#0ea5e9);border-radius:5px;transition:width 0.5s;"></div>
+        <span class="progress-bar-text" style="position:absolute;right:10px;top:2px;color:#38bdf8;font-weight:bold;">${progress.avg}%</span>
+      </div>
+      <button class="share-btn" data-key="${ch.key}" style="background:#0ea5e9;color:#fff;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;margin-right:8px;">Share Progress</button>
+      <button class="archive-btn" data-key="${ch.key}" style="background:#fbbf24;color:#0f172a;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;margin-right:8px;">Archive</button>
+      <button class="finish-challenge-btn" data-key="${ch.key}" style="background:#22c55e;color:#fff;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;">Finish</button>
+      <div class="challenge-analytics" style="margin-top:18px;">
+        <h4 style="color:#38bdf8;">Analytics</h4>
+        <canvas id="engagement-graph-${ch.key}" width="320" height="120"></canvas>
+        <ul>
+          <li>Average Engagement: ${progress.avg}%</li>
+          <li>Best Streak: ${progress.streak} days</li>
+          <li>Reflections: ${progress.reflections.length}</li>
+        </ul>
+      </div>
+      <div class="challenge-calendar" style="margin-top:18px;">
+        <h4 style="color:#38bdf8;">Reflection Calendar</h4>
+        <div id="calendar-${ch.key}" style="display:flex;gap:4px;flex-wrap:wrap;"></div>
+      </div>
+    `;
+    container.appendChild(card);
+
+    // Draw analytics graph
+    setTimeout(() => {
+      const ctx = document.getElementById(`engagement-graph-${ch.key}`);
+      if (ctx && progress.reflections.length) {
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: progress.reflections.map(r => r.date),
+            datasets: [{
+              label: 'Engagement (%)',
+              data: progress.reflections.map(r => r.percent),
+              borderColor: '#38bdf8',
+              backgroundColor: '#0ea5e9',
+              tension: 0.2,
+              pointRadius: 4,
+              pointBackgroundColor: '#fbbf24'
+            }]
+          },
+          options: {
+            responsive: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              y: { min: 0, max: 100, ticks: { color: '#f8fafc' }, grid: { color: '#334155' } },
+              x: { ticks: { color: '#f8fafc' }, grid: { color: '#334155' } }
+            }
+          }
+        });
+      }
+    }, 100);
+
+    // Draw simple calendar (just highlight reflection days)
+    setTimeout(() => {
+      const calDiv = document.getElementById(`calendar-${ch.key}`);
+      if (calDiv) {
+        calDiv.innerHTML = "";
+        const days = {};
+        progress.reflections.forEach(r => days[r.date] = true);
+        // Show last 30 days
+        for (let i = 29; i >= 0; i--) {
+          const d = new Date();
+          d.setDate(d.getDate() - i);
+          const dateStr = d.toISOString().slice(0, 10);
+          const hasReflection = days[dateStr];
+          const box = document.createElement("div");
+          box.title = dateStr;
+          box.style = `width:18px;height:18px;border-radius:4px;margin:1px;display:inline-block;${hasReflection ? 'background:#38bdf8;' : 'background:#334155;'};border:1px solid #16213a;`;
+          calDiv.appendChild(box);
+        }
+      }
+    }, 100);
+  });
+
+  // Level select handler
+  container.querySelectorAll('.level-select').forEach(sel => {
+    sel.onchange = function() {
+      const key = sel.getAttribute('data-key');
+      localStorage.setItem(`challenge-level-${key}`, sel.value);
+      alert("Level updated!");
+    };
+  });
+
+  // Reminder button handler (demo: just alert)
+  container.querySelectorAll('.set-reminder-btn').forEach(btn => {
+    btn.onclick = function() {
+      alert("Reminder set! (In a real app, this would use notifications or emails.)");
+    };
+  });
+
+  // Share button handler
+  container.querySelectorAll('.share-btn').forEach(btn => {
+    btn.onclick = function() {
+      const key = btn.getAttribute('data-key');
+      const ch = challenges.find(c => c.key === key);
+      const progress = getChallengeProgress(key);
+      shareChallengeProgress(ch, progress);
+    };
+  });
+
+  // Archive button handler
+  container.querySelectorAll('.archive-btn').forEach(btn => {
+    btn.onclick = function() {
+      const key = btn.getAttribute('data-key');
+      if (confirm("Are you sure you want to archive this challenge? All progress will be lost.")) {
+        archiveChallenge(key);
+        renderChallengeLibrary();
+      }
+    };
+  });
+
+  // Finish button handler
+  container.querySelectorAll('.finish-challenge-btn').forEach(btn => {
+    btn.onclick = function() {
+      const key = btn.getAttribute('data-key');
+      if (confirm("Mark this challenge as finished?")) {
+        finishChallenge(key);
+        renderChallengeLibrary();
+      }
+    };
+  });
+}
+
+// Render on page load
+document.addEventListener('DOMContentLoaded', renderChallengeLibrary);
+</script>
