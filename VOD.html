@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verse of the Day | Faith Elevate</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Montserrat', 'Lato', Arial, sans-serif;
+      background: linear-gradient(120deg, #141518 0%, #074068 100%);
+      margin: 0;
+      min-height: 100vh;
+      color: #898a8d;
+    }
+    .vod-hero {
+      background: linear-gradient(120deg, #38bdf8 0%, #a5f3fc 100%);
+      border-radius: 18px;
+      margin: 32px auto 18px auto;
+      max-width: 600px;
+      box-shadow: 0 8px 32px #38bdf822;
+      padding: 36px 28px 28px 28px;
+      text-align: center;
+      color: #0f172a;
+      position: relative;
+    }
+    .vod-verse {
+      font-size: 1.5em;
+      font-weight: 700;
+      margin-bottom: 12px;
+      line-height: 1.3;
+      letter-spacing: 0.01em;
+    }
+    .vod-ref {
+      font-size: 1.1em;
+      font-weight: 500;
+      color: #e2e9ed;
+      margin-bottom: 0;
+    }
+    .vod-desc {
+      max-width: 700px;
+      margin: 32px auto 24px auto;
+      background: #f1f5f9;
+      border-radius: 12px;
+      padding: 24px 22px;
+      font-size: 1.13em;
+      color: #334155;
+      text-align: center;
+      box-shadow: 0 2px 12px #0ea5e911;
+    }
+    .vod-section {
+      max-width: 700px;
+      margin: 32px auto 0 auto;
+      background: #2a2a2a;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px #0ea5e911;
+      padding: 24px 22px 30px 22px;
+    }
+    .vod-section h3 {
+      color: #38bdf8;
+      margin-top: 0;
+      font-size: 1.25em;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+    .vod-prayer-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .vod-prayer-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 18px;
+      font-size: 1.08em;
+      background: #000000;
+      border-radius: 8px;
+      padding: 12px 10px;
+      box-shadow: 0 1px 4px #38bdf822;
+      transition: background 0.2s;
+    }
+    .vod-prayer-item.done {
+      background: #0d0e0e;
+      color: #fefefe;
+      text-decoration: line-through;
+    }
+    .vod-prayer-btn {
+      margin-left: auto;
+      background: #38bdf8;
+      color: #0f172a;
+      border: none;
+      border-radius: 6px;
+      padding: 7px 16px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1em;
+      transition: 0.2s;
+    }
+    .vod-prayer-btn:disabled {
+      background: #a5f3fc;
+      color: #64748b;
+      cursor: not-allowed;
+    }
+    .vod-prayer-check {
+      font-size: 1.5em;
+      color: #22c55e;
+      margin-left: 16px;
+      transition: color 0.2s;
+    }
+    .vod-timer-bar-wrap {
+      width: 180px;
+      height: 10px;
+      background: #e0e7ff;
+      border-radius: 6px;
+      margin-left: 18px;
+      margin-right: 8px;
+      overflow: hidden;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .vod-timer-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #38bdf8, #0ea5e9);
+      border-radius: 6px;
+      transition: width 0.2s linear;
+    }
+    .vod-declaration-box {
+      background: linear-gradient(120deg, #f0fdfa 0%, #e0e7ff 100%);
+      border-radius: 12px;
+      padding: 28px 18px;
+      margin: 32px auto 0 auto;
+      max-width: 700px;
+      box-shadow: 0 2px 12px #38bdf822;
+      font-size: 1.18em;
+      font-weight: 500;
+      color: #0f172a;
+      text-align: center;
+      min-height: 80px;
+      letter-spacing: 0.01em;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 8px 6px;
+    }
+    .vod-declaration-segment {
+      background: none;
+      border-radius: 6px;
+      padding: 2px 8px;
+      margin: 0 2px;
+      transition: 0.3s, color 0.3s;
+    }
+    .vod-declaration-segment.active {
+      background: #38bdf8;
+      color: #fff;
+      font-weight: 700;
+      box-shadow: 0 2px 8px #38bdf822;
+      animation: pulse 0.7s;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 #38bdf800; }
+      50% { box-shadow: 0 0 12px #38bdf855; }
+      100% { box-shadow: 0 2px 8px #38bdf822; }
+    }
+    @media (max-width: 700px) {
+      .vod-hero, .vod-desc, .vod-section, .vod-declaration-box {
+        max-width: 98vw;
+        padding-left: 6vw;
+        padding-right: 6vw;
+      }
+    }
+    @media (max-width: 480px) {
+      .vod-hero, .vod-desc, .vod-section, .vod-declaration-box {
+        padding: 16px 4vw;
+      }
+      .vod-verse { font-size: 1.1em; }
+    }
+    .vod-settings {
+      max-width: 700px;
+      margin: 28px auto 0 auto;
+      background: #f1f5f9;
+      border-radius: 12px;
+      padding: 18px 22px;
+      font-size: 1.08em;
+      color: #334155;
+      box-shadow: 0 2px 12px #0ea5e911;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 18px 24px;
+      justify-content: center;
+    }
+    .vod-settings label {
+      font-weight: 600;
+      margin-right: 8px;
+    }
+    .vod-settings select, .vod-settings input[type="checkbox"] {
+      margin-left: 6px;
+      font-size: 1em;
+      padding: 3px 8px;
+      border-radius: 5px;
+      border: 1px solid #38bdf8;
+      background: #fff;
+      color: #334155;
+    }
+    .vod-declaration-controls {
+      text-align: center;
+      margin-bottom: 18px;
+    }
+    .vod-declaration-controls button {
+      background: #38bdf8;
+      color: #0f172a;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 22px;
+      font-weight: bold;
+      font-size: 1.08em;
+      cursor: pointer;
+      margin: 0 8px;
+      transition:  0.2s;
+    }
+    .vod-declaration-controls button:disabled {
+      background: #a5f3fc;
+      color: #64748b;
+      cursor: not-allowed;
+    }
+    .vod-graph-section {
+      max-width: 700px;
+      margin: 36px auto 0 auto;
+      background: #f1f5f9;
+      border-radius: 12px;
+      padding: 24px 22px;
+      box-shadow: 0 2px 12px #0ea5e911;
+      text-align: center;
+    }
+    .vod-graph-section h3 {
+      color: #38bdf8;
+      margin-bottom: 18px;
+    }
+  </style>
+</head>
+<body>
+ <header>
+    <h1>Faith Elevate</h1>
+    <div class="menu-container">
+      <div class="menu-icon">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <div class="menu-dropdown">
+        <a href="#" id="profile-menu-link">Profile</a>
+        <a href="#">Settings</a>
+        <a href="#">Help</a>
+        <a id="logout-menu-item" href="#">Log Out</a>
+      </div>
+    </div>
+    
+   <script>
+  // Highlight the current page and show live indicator
+  document.addEventListener('DOMContentLoaded', function() {
+    const page = location.pathname.split('/').pop().replace('.html','').toLowerCase();
+    const map = {
+      home: 'dashboard-home',
+      library: 'dashboard-library',
+      progress: 'dashboard-progress',
+      reflections: 'dashboard-reflections',
+      vod: 'dashboard-vod',
+      reminder: 'dashboard-reminder',
+      chalshare: 'dashboard-share',
+      custom: 'dashboard-custom',
+      archive: 'dashboard-archive',
+      profile: 'dashboard-profile'
+    };
+    Object.keys(map).forEach(key => {
+      const el = document.getElementById(map[key]);
+      if (el) el.classList.remove('active');
+    });
+    if (map[page]) {
+      const el = document.getElementById(map[page]);
+      if (el) {
+        el.classList.add('active');
+        // Add live indicator
+        if (!el.querySelector('.live-indicator')) {
+          const live = document.createElement('span');
+          live.className = 'live-indicator';
+          el.appendChild(live);
+        }
+      }
+    }
+  });
+    document.addEventListener('DOMContentLoaded', function() {
+    const page = location.pathname.split('/').pop().replace('.html','').toLowerCase();
+    const map = {
+      index: 'dashboard-home',
+      home: 'dashboard-home',
+      library: 'dashboard-library',
+      progress: 'dashboard-progress',
+      reflections: 'dashboard-reflections',
+      vod: 'dashboard-vod',
+      reminder: 'dashboard-reminder',
+      chalshare: 'dashboard-share',
+      custom: 'dashboard-custom',
+      archive: 'dashboard-archive',
+      profile: 'dashboard-profile'
+    };
+    Object.keys(map).forEach(key => {
+      const el = document.getElementById(map[key]);
+      if (el) el.classList.remove('active');
+    });
+    // Support index.html as home
+    let pageKey = page === "" ? "index" : page;
+    if (map[pageKey]) {
+      const el = document.getElementById(map[pageKey]);
+      if (el) {
+        el.classList.add('active');
+        // Add live indicator
+        if (!el.querySelector('.live-indicator')) {
+          const live = document.createElement('span');
+          live.className = 'live-indicator';
+          el.appendChild(live);
+        }
+      }
+    }
+  });
+
+</script>
+    <nav>
+      <ul>
+        
+             <a href="index.html" class="dashboard-link" id="dashboard-home">Home</a>
+  <a href="library.html" class="dashboard-link" id="dashboard-library">Library</a>
+  <a href="progress.html" class="dashboard-link" id="dashboard-progress">Progress</a>
+  <a href="reflections.html" class="dashboard-link" id="dashboard-reflections">Reflections</a>
+  <a href="VOD.html" class="dashboard-link" id="dashboard-vod">Dily Verse</a>
+  <a href="chalShare.html" class="dashboard-link" id="dashboard-share">Share</a>
+  <a href="custom.html" class="dashboard-link" id="dashboard-custom">Customise</a>
+  <a href="archive.html" class="dashboard-link" id="dashboard-archive">Achievements</a> </ul>
+    </nav>
+  </header>
+  <!-- SETTINGS SECTION -->
+  <section class="vod-settings">
+    <label for="vod-frequency">Show verses:</label>
+    <select id="vod-frequency">
+      <option value="daily">Daily</option>
+      <option value="hourly">Hourly</option>
+      <option value="custom">Custom Times</option>
+    </select>
+    <span id="vod-custom-times" style="display:none;">
+      <label><input type="checkbox" value="06:00">6am</label>
+      <label><input type="checkbox" value="12:00">12pm</label>
+      <label><input type="checkbox" value="15:00">3pm</label>
+      <label><input type="checkbox" value="20:00">8pm</label>
+      <label><input type="checkbox" value="00:00">12am</label>
+    </span>
+  </section>
+
+  <main>
+    <!-- Verse of the Day Hero -->
+    <section class="vod-hero">
+      <div class="vod-verse">“For I know the plans I have for you,” declares the Lord, “plans to prosper you and not to harm you, plans to give you hope and a future.”</div>
+      <div class="vod-ref">Jeremiah 29:11</div>
+    </section>
+
+    <!-- Description -->
+    <section class="vod-desc">
+      Jeremiah 29:11 is a promise of God’s unwavering care and intentionality for our lives. Even when circumstances seem uncertain, God assures us that His plans are rooted in hope, goodness, and a future filled with purpose. This verse invites us to trust Him, knowing that every season—whether joyful or challenging—is woven into His greater design for our well-being. Embracing this truth brings peace and confidence, reminding us that we are never forgotten or without direction in God’s loving hands.
+    </section>
+
+    <!-- Prayer Section -->
+    <section class="vod-section">
+      <h3>Prayer Points</h3>
+      <ul class="vod-prayer-list" id="vod-prayer-list"></ul>
+    </section>
+
+    <!-- Declaration Section -->
+    <section class="vod-section" style="margin-top:32px;">
+      <h3>Declaration</h3>
+      <div class="vod-declaration-controls">
+        <button id="start-declaration-btn">Start Declaration</button>
+      </div>
+      <div class="vod-declaration-box" id="vod-declaration-box"></div>
+    </section>
+
+    <!-- Prayer Altar Progress Graph -->
+    <section class="vod-graph-section" id="vod-graph-section" style="display:none;">
+      <h3>Your Prayer Altar Progress</h3>
+      <canvas id="vod-prayer-graph" width="400" height="180"></canvas>
+    </section>
+  </main>
+
+  <script>
+    // --- SETTINGS LOGIC ---
+    const frequencySelect = document.getElementById('vod-frequency');
+    const customTimes = document.getElementById('vod-custom-times');
+    frequencySelect.addEventListener('change', function() {
+      if (frequencySelect.value === 'custom') {
+        customTimes.style.display = 'inline-block';
+      } else {
+        customTimes.style.display = 'none';
+      }
+      localStorage.setItem('vod-frequency', frequencySelect.value);
+      if (frequencySelect.value === 'custom') {
+        // Save checked times
+        saveCustomTimes();
+      }
+    });
+    customTimes.addEventListener('change', saveCustomTimes);
+    function saveCustomTimes() {
+      const checked = Array.from(customTimes.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
+      localStorage.setItem('vod-custom-times', JSON.stringify(checked));
+    }
+    // Restore settings on load
+    document.addEventListener('DOMContentLoaded', function() {
+      const freq = localStorage.getItem('vod-frequency') || 'daily';
+      frequencySelect.value = freq;
+      if (freq === 'custom') customTimes.style.display = 'inline-block';
+      const savedTimes = JSON.parse(localStorage.getItem('vod-custom-times') || "[]");
+      customTimes.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        cb.checked = savedTimes.includes(cb.value);
+      });
+    });
+
+    // --- PRAYER POINTS DATA ---
+    const prayerPoints = [
+      "Thank God for His good plans and ask for faith to trust Him in every season.",
+      "Pray for hope to rise in your heart, even when the future seems uncertain.",
+      "Ask God to reveal His purpose for your life and guide your daily steps.",
+      "Pray for protection from harm and for peace in the midst of challenges.",
+      "Declare that your future is secure in God’s hands, and surrender your worries to Him."
+    ];
+
+    // --- RENDER PRAYER POINTS ---
+    const prayerList = document.getElementById('vod-prayer-list');
+    function renderPrayerPoints() {
+      prayerList.innerHTML = "";
+      prayerPoints.forEach((point, idx) => {
+        const li = document.createElement('li');
+        li.className = 'vod-prayer-item';
+        li.innerHTML = `
+          <span>${point}</span>
+          <button class="vod-prayer-btn" data-idx="${idx}">Start Prayer</button>
+          <span class="vod-timer-bar-wrap" style="display:none;">
+            <div class="vod-timer-bar" style="width:0%;"></div>
+          </span>
+          <span class="vod-prayer-check" style="display:none;"><i class="fa-solid fa-check"></i></span>
+        `;
+        prayerList.appendChild(li);
+      });
+    }
+    renderPrayerPoints();
+
+    // --- PRAYER TIMER LOGIC ---
+    const PRAYER_TIME = 180; // seconds (3 minutes)
+    let prayerTimers = Array(prayerPoints.length).fill(null);
+    let prayerDone = Array(prayerPoints.length).fill(false);
+
+    prayerList.addEventListener('click', function(e) {
+      if (e.target.classList.contains('vod-prayer-btn')) {
+        const idx = Number(e.target.getAttribute('data-idx'));
+        startPrayerTimer(idx);
+      }
+    });
+
+    function startPrayerTimer(idx) {
+      const li = prayerList.children[idx];
+      const btn = li.querySelector('.vod-prayer-btn');
+      const barWrap = li.querySelector('.vod-timer-bar-wrap');
+      const bar = li.querySelector('.vod-timer-bar');
+      const check = li.querySelector('.vod-prayer-check');
+
+      if (btn.disabled) return;
+
+      btn.disabled = true;
+      barWrap.style.display = 'inline-block';
+      bar.style.width = '0%';
+      check.style.display = 'none';
+
+      let elapsed = 0;
+      const interval = 1000;
+      prayerTimers[idx] = setInterval(() => {
+        elapsed++;
+        const percent = Math.min(100, (elapsed / PRAYER_TIME) * 100);
+        bar.style.width = percent + '%';
+        if (elapsed >= PRAYER_TIME) {
+          clearInterval(prayerTimers[idx]);
+          bar.style.width = '100%';
+          check.style.display = 'inline';
+          btn.style.display = 'none';
+          barWrap.style.display = 'none';
+          li.classList.add('done');
+          prayerDone[idx] = true;
+          savePrayerProgress();
+          updatePrayerGraph();
+        }
+      }, interval);
+    }
+
+    // --- DECLARATION DATA ---
+    const declarationSegments = [
+      "I declare that God’s plans for me are good,",
+      "filled with hope and a future.",
+      "I trust Him even when I do not see the way.",
+      "His purpose for my life will prevail.",
+      "I am not forgotten,",
+      "I am not without direction,",
+      "for my future is secure in His hands.",
+      "Amen."
+    ];
+
+    // --- RENDER DECLARATION ---
+    const declarationBox = document.getElementById('vod-declaration-box');
+    function renderDeclaration() {
+      declarationBox.innerHTML = "";
+      declarationSegments.forEach((seg, idx) => {
+        const span = document.createElement('span');
+        span.className = 'vod-declaration-segment';
+        span.textContent = seg;
+        declarationBox.appendChild(span);
+      });
+    }
+    renderDeclaration();
+
+    // --- DECLARATION HIGHLIGHT LOGIC ---
+    let currentSeg = 0;
+    let declarationActive = false;
+    let declarationTimeout = null;
+
+    function highlightDeclarationSegment(idx) {
+      const segments = declarationBox.querySelectorAll('.vod-declaration-segment');
+      segments.forEach((seg, i) => {
+        seg.classList.toggle('active', i === idx);
+      });
+    }
+    function nextDeclarationSegment() {
+      const segments = declarationBox.querySelectorAll('.vod-declaration-segment');
+      if (currentSeg < segments.length) {
+        highlightDeclarationSegment(currentSeg);
+        // Duration: 2s + 0.08s per character (min 2s, max 4s)
+        const segText = segments[currentSeg].textContent;
+        let duration = Math.max(2000, Math.min(4000, 2000 + segText.length * 80));
+        declarationTimeout = setTimeout(() => {
+          currentSeg++;
+          if (currentSeg < segments.length) {
+            nextDeclarationSegment();
+          } else {
+            highlightDeclarationSegment(currentSeg - 1); // Keep Amen highlighted
+            declarationActive = false;
+            setTimeout(() => {
+              congratulateDeclaration();
+            }, 600);
+          }
+        }, duration);
+      }
+    }
+
+    // --- DECLARATION BUTTON LOGIC ---
+    const startDeclarationBtn = document.getElementById('start-declaration-btn');
+    startDeclarationBtn.addEventListener('click', function() {
+      if (declarationActive) return;
+      declarationActive = true;
+      currentSeg = 0;
+      renderDeclaration();
+      nextDeclarationSegment();
+      startDeclarationBtn.disabled = true;
+    });
+
+    function congratulateDeclaration() {
+      alert("Congratulations! You have completed your declaration for today.");
+      // Save declaration progress
+      saveDeclarationProgress();
+      updatePrayerGraph();
+      startDeclarationBtn.disabled = false;
+    }
+
+    // --- PRAYER ALTAR PROGRESS GRAPH ---
+    function savePrayerProgress() {
+      // Save prayerDone array to localStorage with today's date
+      const today = new Date().toISOString().slice(0,10);
+      let altar = JSON.parse(localStorage.getItem('vod-altar-progress') || "{}");
+      altar[today] = altar[today] || { prayers: [false, false, false, false, false], declaration: false };
+      altar[today].prayers = prayerDone.slice();
+      localStorage.setItem('vod-altar-progress', JSON.stringify(altar));
+    }
+    function saveDeclarationProgress() {
+      const today = new Date().toISOString().slice(0,10);
+      let altar = JSON.parse(localStorage.getItem('vod-altar-progress') || "{}");
+      altar[today] = altar[today] || { prayers: [false, false, false, false, false], declaration: false };
+      altar[today].declaration = true;
+      localStorage.setItem('vod-altar-progress', JSON.stringify(altar));
+    }
+    function getAltarProgressData() {
+      let altar = JSON.parse(localStorage.getItem('vod-altar-progress') || "{}");
+      // Return last 7 days
+      const days = [];
+      const prayerCounts = [];
+      const declarationCounts = [];
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const dateStr = d.toISOString().slice(0,10);
+        days.push(dateStr.slice(5));
+        const entry = altar[dateStr] || { prayers: [false, false, false, false, false], declaration: false };
+        prayerCounts.push(entry.prayers.filter(Boolean).length);
+        declarationCounts.push(entry.declaration ? 1 : 0);
+      }
+      return { days, prayerCounts, declarationCounts };
+    }
+    function updatePrayerGraph() {
+      const graphSection = document.getElementById('vod-graph-section');
+      graphSection.style.display = "block";
+      const ctx = document.getElementById('vod-prayer-graph').getContext('2d');
+      const { days, prayerCounts, declarationCounts } = getAltarProgressData();
+      if (window.vodPrayerChart) window.vodPrayerChart.destroy();
+      window.vodPrayerChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: days,
+          datasets: [
+            {
+              label: 'Prayers Completed',
+              data: prayerCounts,
+              backgroundColor: '#38bdf8'
+            },
+            {
+              label: 'Declaration',
+              data: declarationCounts,
+              backgroundColor: '#fbbf24'
+            }
+          ]
+        },
+        options: {
+          responsive: false,
+          plugins: { legend: { display: true } },
+          scales: {
+            y: { min: 0, max: 5, ticks: { color: '#334155', stepSize: 1 }, grid: { color: '#cbd5e1' } },
+            x: { ticks: { color: '#334155' }, grid: { color: '#cbd5e1' } }
+          }
+        }
+      });
+    }
+
+    // --- RESTORE PROGRESS ON LOAD ---
+    document.addEventListener('DOMContentLoaded', function() {
+      // Restore prayer progress
+      const today = new Date().toISOString().slice(0,10);
+      let altar = JSON.parse(localStorage.getItem('vod-altar-progress') || "{}");
+      if (altar[today]) {
+        prayerDone = altar[today].prayers || [false, false, false, false, false];
+        // Mark completed prayers
+        prayerDone.forEach((done, idx) => {
+          if (done) {
+            const li = prayerList.children[idx];
+            if (li) {
+              li.classList.add('done');
+              li.querySelector('.vod-prayer-btn').style.display = 'none';
+              li.querySelector('.vod-timer-bar-wrap').style.display = 'none';
+              li.querySelector('.vod-prayer-check').style.display = 'inline';
+              li.querySelector('.vod-prayer-btn').disabled = true;
+            }
+          }
+        });
+        // Declaration progress
+        if (altar[today].declaration) {
+          startDeclarationBtn.disabled = false;
+        }
+      }
+      updatePrayerGraph();
+    });
+  </script>
+</body>
+</html>
